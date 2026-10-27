@@ -1,0 +1,30 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment / secrets (keep the *.example templates)
+.env
+.env.*
+!.env.example
+
+# Generated runtime artifacts: FAISS index, document store, embedding cache, trained models,
+# evaluation report. Rebuilt by scripts/build_index.py / train_models.py or on API startup.
+data/processed/*
+!data/processed/.gitkeep
+
+# Elasticsearch data, if ever bind-mounted locally
+es-data/
+
+# Logs, OS and editor files
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/

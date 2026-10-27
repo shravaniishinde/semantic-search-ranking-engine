@@ -1,0 +1,52 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    environment:
+      - discovery.type=single-node
+      # Local development only: security disabled so the API can connect without credentials.
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      # auto: use Elasticsearch when it is up, otherwise the in-memory BM25 fallback.
+      - BM25_BACKEND=auto
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_INDEX=documents
+      - LOG_LEVEL=INFO
+    ports:
+      - "8000:8000"
+    volumes:
+      - processed-data:/app/data/processed
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+        # `docker compose up api dashboard` starts without Elasticsearch (in-memory BM25 fallback).
+        required: false
+
+  dashboard:
+    build:
+      context: frontend
+      args:
+        # The browser calls the API directly, so this is the host-visible API address.
+        VITE_API_BASE_URL: http://localhost:8000
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  es-data:
+  processed-data:

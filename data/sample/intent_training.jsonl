@@ -1,0 +1,125 @@
+{"query": "what is the shared responsibility model", "intent": "informational"}
+{"query": "explain the CAP theorem", "intent": "informational"}
+{"query": "what does ACID mean in databases", "intent": "informational"}
+{"query": "overview of zero trust security", "intent": "informational"}
+{"query": "what is retrieval augmented generation", "intent": "informational"}
+{"query": "why do companies use multi cloud", "intent": "informational"}
+{"query": "introduction to reinforcement learning", "intent": "informational"}
+{"query": "what is technical debt", "intent": "informational"}
+{"query": "meaning of semantic versioning", "intent": "informational"}
+{"query": "what are design patterns", "intent": "informational"}
+{"query": "history of the transformer model", "intent": "informational"}
+{"query": "what is site reliability engineering", "intent": "informational"}
+{"query": "explain edge computing", "intent": "informational"}
+{"query": "basics of network segmentation", "intent": "informational"}
+{"query": "what is a data warehouse", "intent": "informational"}
+{"query": "concept of elasticity in cloud computing", "intent": "informational"}
+{"query": "why is fairness important in machine learning", "intent": "informational"}
+{"query": "what is gitops", "intent": "informational"}
+{"query": "what is overfitting", "intent": "informational"}
+{"query": "explain how dns works", "intent": "informational"}
+{"query": "benefits of agile development", "intent": "informational"}
+{"query": "what is semantic search", "intent": "informational"}
+{"query": "purpose of a security operations center", "intent": "informational"}
+{"query": "what problem does ipv6 solve", "intent": "informational"}
+{"query": "what is a vector database", "intent": "informational"}
+{"query": "how to configure autoscaling policies", "intent": "technical"}
+{"query": "set up a ci pipeline with github actions", "intent": "technical"}
+{"query": "implement parameterized queries in python", "intent": "technical"}
+{"query": "configure s3 lifecycle rules", "intent": "technical"}
+{"query": "deploy a container to kubernetes with a deployment manifest", "intent": "technical"}
+{"query": "create a gin index on a jsonb column", "intent": "technical"}
+{"query": "how to write a dockerfile for a python app", "intent": "technical"}
+{"query": "enable tls 1.3 on nginx", "intent": "technical"}
+{"query": "store terraform state in a remote backend", "intent": "technical"}
+{"query": "implement cache aside pattern with redis", "intent": "technical"}
+{"query": "configure dmarc spf and dkim records", "intent": "technical"}
+{"query": "set up prometheus alerting rules", "intent": "technical"}
+{"query": "design a rest api with versioning", "intent": "technical"}
+{"query": "security architecture for a cloud workload", "intent": "technical"}
+{"query": "plan cidr ranges for a vpc", "intent": "technical"}
+{"query": "implement canary releases with feature flags", "intent": "technical"}
+{"query": "rotate encryption keys with envelope encryption", "intent": "technical"}
+{"query": "build a semantic search index with faiss", "intent": "technical"}
+{"query": "fine tune bert for named entity recognition", "intent": "technical"}
+{"query": "configure rate limiting for login attempts", "intent": "technical"}
+{"query": "best practices for code review", "intent": "technical"}
+{"query": "set up a site to site ipsec tunnel", "intent": "technical"}
+{"query": "how to shard a database by customer id", "intent": "technical"}
+{"query": "steps to migrate an application to the cloud", "intent": "technical"}
+{"query": "how to keep secrets out of a git repository", "intent": "technical"}
+{"query": "AWS Lambda", "intent": "entity_lookup"}
+{"query": "Log4Shell", "intent": "entity_lookup"}
+{"query": "SolarWinds Orion", "intent": "entity_lookup"}
+{"query": "Kubernetes", "intent": "entity_lookup"}
+{"query": "Microsoft Entra ID", "intent": "entity_lookup"}
+{"query": "HashiCorp Vault", "intent": "entity_lookup"}
+{"query": "WannaCry 2017", "intent": "entity_lookup"}
+{"query": "Google BeyondCorp", "intent": "entity_lookup"}
+{"query": "Snowflake data cloud", "intent": "entity_lookup"}
+{"query": "MongoDB", "intent": "entity_lookup"}
+{"query": "Kent Beck", "intent": "entity_lookup"}
+{"query": "DeepMind AlphaGo", "intent": "entity_lookup"}
+{"query": "Argo CD", "intent": "entity_lookup"}
+{"query": "Facebook outage October 2021", "intent": "entity_lookup"}
+{"query": "Martin Fowler", "intent": "entity_lookup"}
+{"query": "Terraform", "intent": "entity_lookup"}
+{"query": "Apache Cassandra", "intent": "entity_lookup"}
+{"query": "Amazon S3 Glacier", "intent": "entity_lookup"}
+{"query": "NIST 800-207", "intent": "entity_lookup"}
+{"query": "CVE-2021-44228", "intent": "entity_lookup"}
+{"query": "HackerOne", "intent": "entity_lookup"}
+{"query": "Cloudflare", "intent": "entity_lookup"}
+{"query": "Tianqi Chen XGBoost", "intent": "entity_lookup"}
+{"query": "Splunk", "intent": "entity_lookup"}
+{"query": "Google Spanner", "intent": "entity_lookup"}
+{"query": "pod stuck in crashloopbackoff", "intent": "troubleshooting"}
+{"query": "deadlock found when trying to get lock", "intent": "troubleshooting"}
+{"query": "java service runs out of memory", "intent": "troubleshooting"}
+{"query": "dns lookup returns nxdomain", "intent": "troubleshooting"}
+{"query": "website is slow and dropping packets", "intent": "troubleshooting"}
+{"query": "replica is lagging behind primary", "intent": "troubleshooting"}
+{"query": "lambda function timeout error", "intent": "troubleshooting"}
+{"query": "postgres query is very slow", "intent": "troubleshooting"}
+{"query": "terraform apply fails with state lock error", "intent": "troubleshooting"}
+{"query": "docker build is not using the cache", "intent": "troubleshooting"}
+{"query": "users cannot log in after mfa change", "intent": "troubleshooting"}
+{"query": "fix ssl handshake failure", "intent": "troubleshooting"}
+{"query": "my model accuracy drops on new data", "intent": "troubleshooting"}
+{"query": "load balancer health check failing", "intent": "troubleshooting"}
+{"query": "too many alerts firing at night", "intent": "troubleshooting"}
+{"query": "redis memory full keys evicted", "intent": "troubleshooting"}
+{"query": "why is my pod restarting", "intent": "troubleshooting"}
+{"query": "outofmemoryerror java heap space", "intent": "troubleshooting"}
+{"query": "vpn tunnel keeps disconnecting", "intent": "troubleshooting"}
+{"query": "emails going to spam after domain change", "intent": "troubleshooting"}
+{"query": "high latency on api requests", "intent": "troubleshooting"}
+{"query": "ci pipeline fails intermittently", "intent": "troubleshooting"}
+{"query": "servfail error when resolving domain", "intent": "troubleshooting"}
+{"query": "cloud bill suddenly increased", "intent": "troubleshooting"}
+{"query": "debug a ransomware infection", "intent": "troubleshooting"}
+{"query": "tcp vs udp", "intent": "comparison"}
+{"query": "monolith versus microservices", "intent": "comparison"}
+{"query": "difference between sql and nosql", "intent": "comparison"}
+{"query": "compare aws azure and google cloud", "intent": "comparison"}
+{"query": "layer 4 vs layer 7 load balancer", "intent": "comparison"}
+{"query": "containers compared to virtual machines", "intent": "comparison"}
+{"query": "blue green vs canary deployment", "intent": "comparison"}
+{"query": "http2 vs http3", "intent": "comparison"}
+{"query": "olap versus oltp", "intent": "comparison"}
+{"query": "which is better ipsec or wireguard", "intent": "comparison"}
+{"query": "precision vs recall", "intent": "comparison"}
+{"query": "bert vs gpt", "intent": "comparison"}
+{"query": "pros and cons of serverless versus containers", "intent": "comparison"}
+{"query": "read committed vs serializable isolation", "intent": "comparison"}
+{"query": "argo cd or flux", "intent": "comparison"}
+{"query": "difference between ipv4 and ipv6", "intent": "comparison"}
+{"query": "spot instances vs reserved instances", "intent": "comparison"}
+{"query": "jenkins compared to github actions", "intent": "comparison"}
+{"query": "mongodb vs postgresql", "intent": "comparison"}
+{"query": "symmetric versus asymmetric encryption", "intent": "comparison"}
+{"query": "tdd vs writing tests after code", "intent": "comparison"}
+{"query": "replication vs sharding", "intent": "comparison"}
+{"query": "cnn or transformer for images", "intent": "comparison"}
+{"query": "pinecone vs faiss", "intent": "comparison"}
+{"query": "s3 standard vs glacier cost", "intent": "comparison"}

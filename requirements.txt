@@ -1,0 +1,27 @@
+# Install CPU torch first (much smaller than the default CUDA build):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+# then: pip install -r requirements.txt && python -m spacy download en_core_web_sm
+# Versions below are the ones this project was tested with (Python 3.11, Windows + Linux container).
+
+# ML / retrieval
+sentence-transformers==6.2.0
+transformers==5.20.2
+faiss-cpu==1.15.1
+elasticsearch==8.19.3
+spacy==3.8.16
+xgboost==3.2.0
+scikit-learn==1.9.1
+scipy==1.17.1
+numpy==2.4.6
+joblib==1.6.0
+
+# API / config
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.1
+pydantic-settings==2.16.1
+
+# Testing / tooling
+pytest==9.1.1
+httpx==0.28.1
+ruff==0.17.2

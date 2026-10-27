@@ -1,0 +1,6 @@
+# Normalise text files to LF everywhere (Dockerfiles, nginx config and CI run on Linux).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary

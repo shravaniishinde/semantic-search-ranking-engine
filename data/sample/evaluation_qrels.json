@@ -1,0 +1,25 @@
+{
+  "description": "Graded relevance judgments for evaluation only (never used for training). 2 = highly relevant, 1 = partially relevant, unlisted = 0. Mix of keyword-heavy and paraphrased queries.",
+  "queries": [
+    {"query": "security architecture for AWS", "relevance": {"cloud-001": 2, "cloud-007": 1, "sec-003": 1, "cloud-008": 1}},
+    {"query": "stop attackers from guessing user passwords", "relevance": {"sec-002": 2}},
+    {"query": "CVE-2021-44228", "relevance": {"sec-001": 2, "sec-010": 1}},
+    {"query": "why is my kubernetes pod restarting repeatedly", "relevance": {"devops-004": 2, "devops-003": 1}},
+    {"query": "compare TCP and UDP", "relevance": {"net-001": 2, "net-008": 1}},
+    {"query": "how do attention mechanisms work in language models", "relevance": {"ai-001": 2, "ai-002": 1}},
+    {"query": "reduce cloud bill", "relevance": {"cloud-005": 2, "cloud-004": 1}},
+    {"query": "Deadlock found when trying to get lock", "relevance": {"db-008": 2, "db-002": 1}},
+    {"query": "difference between SQL and NoSQL databases", "relevance": {"db-003": 2, "db-004": 1, "db-002": 1}},
+    {"query": "Facebook outage 2021", "relevance": {"net-003": 2}},
+    {"query": "keep API keys out of source code", "relevance": {"devops-010": 2}},
+    {"query": "monitoring metrics and alerting dashboards", "relevance": {"devops-006": 2, "devops-009": 1, "sec-008": 1}},
+    {"query": "what is semantic search", "relevance": {"ai-003": 2, "db-010": 1, "ai-006": 1}},
+    {"query": "website is slow and packets are being dropped", "relevance": {"net-009": 2, "net-004": 1, "cloud-010": 1}},
+    {"query": "Terraform state file", "relevance": {"devops-005": 2}},
+    {"query": "writing tests before code", "relevance": {"se-002": 2, "se-003": 1}},
+    {"query": "monolith versus microservices", "relevance": {"se-001": 2, "devops-003": 1}},
+    {"query": "ransomware recovery plan", "relevance": {"sec-005": 2}},
+    {"query": "caching layer to speed up database reads", "relevance": {"db-006": 2, "db-005": 1, "db-001": 1}},
+    {"query": "gradient boosted trees for tabular data", "relevance": {"ai-005": 2, "ai-004": 1}}
+  ]
+}
