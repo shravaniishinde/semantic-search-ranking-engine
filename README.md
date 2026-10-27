@@ -157,6 +157,37 @@ reports `bm25_backend: "elasticsearch (unavailable: ...)"` in the response.
   `BM25_BACKEND=auto` and ES does not answer a ping. Rankings are similar to ES but scores are
   not numerically identical because the analyzers differ.
 
+### Elasticsearch verification (2026-10-27, Elasticsearch 8.15.3 via `docker compose`)
+
+* `REQUIRE_ELASTICSEARCH=1 pytest tests/integration/test_elasticsearch_live.py` **passed**
+  (index creation, bulk indexing, BM25 search, category filter, deletion), and the full backend
+  suite passes with Elasticsearch running.
+* With ES up, the API selects it automatically: `/health` reports `"bm25_backend":
+  "elasticsearch"`, 74 documents are in the `documents` index (the 2 confirmed duplicates are
+  excluded), and the System page shows BM25 → Elasticsearch.
+* `python scripts/compare_bm25.py` (same 74 documents in both backends, top 5):
+
+  | Query | Top-1 (in-memory / ES) | Overlap@5 | Notes |
+  |---|---|---|---|
+  | my kubernetes pod keeps restarting | devops-003 / **devops-004** | 4/5 | ES `english` analyzer stems *restarting → restart*, matching "restarted by the kubelet" in the CrashLoopBackOff article |
+  | cloud security architecture | cloud-001 / cloud-001 | 4/5 | ES scores the title higher (*secure* and *security* share a stem) |
+  | database query performance | db-007 / **db-001** | 5/5 | same five documents, top two swapped |
+  | CVE-2021-44228 | sec-001 / sec-001 | 1 vs 2 hits | ES's `standard` analyzer on entity text splits the ID into `cve` / `2021` / `44228`, so "2021" also matches the Facebook-outage article |
+  | security, category=networking | net-010 / net-010 | 1/1 | filter respected by both |
+
+  Absolute scores are on a similar scale but not identical; neither backend was tuned to match
+  the other.
+* **Outage and recovery** (container stopped while the API kept running): the API stays up,
+  `/health` reports `"bm25_available": false`, searches return HTTP 200 with semantic-only
+  results (`bm25_backend: "elasticsearch (unavailable: ConnectionError)"`), and the System page
+  shows an "Elasticsearch unreachable" warning. After the container restarted, the API picked
+  Elasticsearch up again on its own within about 20 s (the client's dead-node backoff), without
+  an API restart.
+
+| Elasticsearch active | Elasticsearch stopped while the API runs |
+|---|---|
+| ![System page with Elasticsearch](docs/screenshots/12-system-elasticsearch.png) | ![System page during an Elasticsearch outage](docs/screenshots/13-system-elasticsearch-outage.png) |
+
 ## 6. Semantic retrieval
 
 Documents are encoded as `"{title}. {content}"` with MiniLM, normalised, and cached in
@@ -435,6 +466,20 @@ Measured results (2026-10-26, in-memory BM25 backend, CPU, this repository's sam
 | Hybrid (RRF) | 1.000 | 0.300 | 0.787 | 0.895 | 0.190 | 0.921 | 0.928 |
 | Hybrid + XGBoost rerank | 1.000 | 0.320 | 0.821 | 0.905 | 0.195 | 0.950 | 0.934 |
 
+The same evaluation with **Elasticsearch BM25** (same queries, same trained models; 2026-10-27):
+
+| system | MRR | P@5 | R@5 | NDCG@5 | P@10 | R@10 | NDCG@10 |
+|---|---|---|---|---|---|---|---|
+| BM25 (Elasticsearch) | 0.892 | 0.280 | 0.725 | 0.820 | 0.165 | 0.821 | 0.840 |
+| Semantic (FAISS) | 1.000 | 0.340 | 0.850 | 0.929 | 0.195 | 0.950 | 0.950 |
+| Hybrid (RRF) | 0.975 | 0.320 | 0.817 | 0.898 | 0.195 | 0.938 | 0.926 |
+| Hybrid + XGBoost rerank | 0.975 | 0.330 | 0.825 | 0.896 | 0.200 | 0.963 | 0.926 |
+
+Elasticsearch's stemming lifts BM25 (NDCG@10 0.803 → 0.840), but hybrid and reranked results do
+not improve, and semantic-only remains the best system on either backend. The reranker was
+trained on features computed with the in-memory BM25, so serving it Elasticsearch scores is a
+train/serve mismatch; retraining with `BM25_BACKEND=elasticsearch` would be the consistent setup.
+
 **On this small held-out dataset, semantic retrieval outperforms the hybrid/reranked
 pipeline.** That is a limitation of the current reranker and fusion weights, reported as
 measured; the evaluation queries were never used for training or tuning.
@@ -514,9 +559,10 @@ Frontend environment variable (`frontend/.env.example`):
 ## Demo
 
 The interview walkthrough lives in **[docs/demo-guide.md](docs/demo-guide.md)**: a timed
-0:00–3:00 script built around the query `my kubernetes pod keeps restarting`, where BM25 and
-FAISS disagree on the top document, RRF produces an exact tie, and the reranker's choice can be
-inspected (and questioned) through **Why this result?**. It then covers the evaluation results
+0:00–3:00 script built around the query `my kubernetes pod keeps restarting`. With the default
+in-memory BM25, BM25 and FAISS disagree on the top document and RRF produces an exact tie; with
+Elasticsearch, all three retrieval stages agree and the reranker overrides them. Either way the
+reranker's choice can be inspected (and questioned) through **Why this result?**. It then covers the evaluation results
 and the duplicate/outlier analysis.
 
 ## Known limitations
@@ -526,11 +572,15 @@ and the duplicate/outlier analysis.
   Metrics show the pipeline works, not how it would perform on real traffic.
 * **Hybrid + rerank does not beat semantic-only** on the bundled evaluation set (see above).
   RRF weights are not tuned (tuning on the 20 evaluation queries would be leakage).
-* **Elasticsearch has not been run against a real cluster yet**: Docker Desktop was not running
-  in the development environment, so the live test skipped and `scripts/compare_bm25.py` could
-  not run. The ES retriever is covered by mocked-client unit tests, and the commands under
-  "Running with Docker" (or the manual CI job) perform the real check. All reported numbers use
-  the in-memory BM25 backend.
+* **The two BM25 backends rank differently in places** (see the comparison under section 5):
+  Elasticsearch stems words (`english` analyzer) and splits hyphenated IDs in entity text, while the
+  in-memory tokenizer only strips plural *s* and keeps IDs intact. The reranker was trained with
+  in-memory BM25 features; on Elasticsearch it still reranks the demo query's CrashLoopBackOff
+  article to #2 even though BM25, FAISS and RRF all put it first.
+* **Elasticsearch outages are slow on Windows**: while ES is down, each search spends about 2 s
+  and `/health` about 4 s waiting for refused connections before falling back. Recovery after ES
+  returns takes up to about 30 s (client backoff). The backend choice (Elasticsearch vs
+  in-memory) is made at API startup; starting ES later requires an API restart.
 * **DBSCAN on a small, diverse corpus**: clustering uses mean-centred embeddings with
   `eps=0.75, min_samples=2` (chosen by inspecting this corpus). It yields 13 clusters with ~79 %
   category purity, but 12 of the 15 "outliers" are legitimate technical documents that simply
@@ -548,7 +598,8 @@ and the duplicate/outlier analysis.
   as the browser-measured `/health` round trip. Live search metrics on Analytics are in memory and
   reset when the API restarts. The layout is desktop-first, usable on tablets, not designed for
   phones. There is no 2-D embedding view because the API exposes no projection coordinates.
-* **Docker images have not been built yet** (same reason). The compose file validates with
+* **The API and dashboard Docker images have not been built yet**; only the Elasticsearch
+  service from `docker-compose.yml` has been run. The compose file validates with
   `docker compose config`, and the frontend production build passes locally.
 * **Startup time**: about 25 s with saved indexes and about 50 s on a cold first run (model load,
   ingestion and training), on a laptop CPU.

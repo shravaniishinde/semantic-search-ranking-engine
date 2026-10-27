@@ -1,8 +1,10 @@
 # Interview demo guide (about 3 minutes)
 
 A script for a screen-recorded or live walkthrough of the dashboard. Every number quoted below
-was produced by the current models on the bundled sample data (in-memory BM25 backend); if you
-retrain or ingest new documents, read the values off the screen instead.
+was produced by the current models on the bundled sample data with the **in-memory BM25 backend**
+(the default without Docker). If Elasticsearch is running, the story changes in an interesting
+way; see [With Elasticsearch running](#with-elasticsearch-running) at the end. If you retrain or
+ingest new documents, read the values off the screen instead.
 
 ## Before you start
 
@@ -113,3 +115,32 @@ checks at ingestion, offline evaluation, and this React dashboard that explains 
 Backup query if time allows: `stop attackers from guessing user passwords`. BM25 ranks
 *Preventing SQL Injection* first (shared words); semantic retrieval and the final ranking pick
 *Defending Login Pages Against Credential Stuffing*.
+
+## With Elasticsearch running
+
+Start it with `docker compose up -d elasticsearch` *before* starting the API (the backend is chosen
+at startup). The top bar then shows **BM25: elasticsearch**. For the same query (measured
+2026-10-27):
+
+| Stage | #1 result |
+|---|---|
+| BM25 (Elasticsearch) | *Fixing CrashLoopBackOff* (19.29): the `english` analyzer stems *restarting → restart* |
+| Semantic (FAISS) | *Fixing CrashLoopBackOff* (0.786) |
+| Hybrid (RRF) | *Fixing CrashLoopBackOff* (no tie this time) |
+| Final (XGBoost) | *Kubernetes Orchestration Basics* (4.090 vs 4.057) |
+
+Replace the 0:50–1:50 talking points with: "Here all three retrieval stages agree, and the
+reranker still overrides them. It was trained on features from the in-memory BM25, so serving it
+Elasticsearch scores is a train/serve mismatch, on top of having only 34 training queries.
+'Why this result?' shows the inputs that led to the decision; the fix is to retrain on the
+serving backend and add more judged troubleshooting queries."
+
+On Analytics, after re-running the evaluation with Elasticsearch, NDCG@10 is BM25 **0.840**,
+Semantic **0.950**, Hybrid **0.926**, Hybrid + reranker **0.926**: stemming helps BM25, and
+semantic-only is still best.
+
+Optional resilience demo: `docker compose stop elasticsearch`. The System page turns amber
+("Elasticsearch unreachable") and searches keep working semantic-only, about 2 s slower each on
+Windows. `docker compose start elasticsearch`, and within about 20 s it is green again without
+restarting the API.
+
